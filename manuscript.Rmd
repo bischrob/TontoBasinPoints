@@ -1,0 +1,841 @@
+---
+title: "Geometric Morphometric Analysis of Projectile Points from the Southwest United States"
+author:
+  - firstname: Robert J.
+    lastname: Bischoff
+    affiliation: 1
+address:
+  - code: 1
+    address: School of Human Evolution and Social Change, Arizona State University, Tempe, AZ
+email: rbischoff/@asu.edu
+abstract: |
+  Traditional analyses of projectile points often use visual identification, the presence or absence of discrete characteristics, or linear measurements and angles to classify points into distinct types. Geometric morphometrics provides additional tools for analyzing, visualizing, and comparing projectile point morphology utilizing the whole or parts of the form in either two or three dimensions. This study is an analysis of the effectiveness of geometric morphometric methods for identifying technological similarity in 2D projectile point outlines for previously classified late prehistoric projectile points found in the U.S. Southwest and unclassified projectile points from Tonto Basin, Arizona.  Various methods from geometric morphometrics were compared to determine which method best reproduced the original classification scheme. Elliptical Fourier analysis was compared with various configurations of semilandmark and landmark analyses using generalized Procrustes analysis. These methods were applied to the complete projectile point form, and the landmark analysis was also applied to half of the lower quadrant of the projectile point—essentially one corner of the projectile point. The landmark analysis applied to the corner of the projectile point provided the best results. This method was then applied to the Tonto Basin points. Hierarchical clustering was used on the Tonto Basin projectile point morphometric data to explore the variation in shapes between sites. To demonstrate that geometric morphometric methods can be used without relying on typologies, a network analysis of the morphometric distances was also conducted. This network graph produced distinct clusters of technological similarity in projectile point outlines, while also showing the continuos variation between points. These results demonstrate the effectiveness of geometric morphometrics for the 2D analysis of late prehistoric arrow points.
+keywords:
+- American Southwest
+- Hohokam
+- Arizona
+- projectile points
+- lithics
+- computational archaeology
+- geometric morphometrics
+caption-side: bottom 
+bibliography: references.bib
+biblio-style: journal-of-computer-applications-in-archaeology.csl
+link-citations: yes
+editor_options:
+  chunk_output_type: inline
+output:  
+  bookdown::pdf_document2:
+    fig_caption: true
+    template: template/main.tex
+    citation_package: biblatex
+urlcolor: blue
+header-includes:
+- \newcommand{\bcenter}{\begin{center}}
+- \newcommand{\ecenter}{\end{center}}
+---
+
+```{r setup, echo = F}
+options(knitr.table.format = "latex")
+out.format <- knitr::opts_knit$get("out.format")
+knitr::opts_chunk$set(
+	echo = F,
+	message = FALSE,
+	warning = FALSE,
+	dpi = 450,
+	out.width = "100%"
+)
+```
+
+```{r load, include=FALSE}
+library(tidyverse,quietly = T)
+library(Momocs,quietly = T)
+library(ggthemes, quietly = T)
+library(here)
+library(rio)
+library(igraph)
+library(ggnetwork)
+library(ggimage)
+library(flextable)
+i_am("manuscript.Rmd")
+# keep track of figures and tables
+figs = 1
+tbls = 1
+set.seed(1010)
+
+# load data
+
+# projectile point types of the Southwest
+types = import(here("data/TypesJustice2002.xlsx"),setclass = 'tibble')
+subTypes = c("Chaco Corner Notched","Cottonwood Triangular","Guadalupe","Pueblo Alto Side Notched","Pueblo Side Notched Concave Base","Pueblo Side Notched Straight Base","Snaketown Triangular Concave Base","Snaketown Triangular Concave Base","Tularosa Corner Notched")
+
+# outlines created from Justice's (2002) illustrations
+outJustice = readRDS(here("data/JusticeOutlinesComplete.Rds"))
+
+# Landmarks of projectile points from Justice (2002)
+curvesCorner = readRDS(here("data/curvesCorner.Rds"))
+curvesSide = readRDS(here("data/curvesSide.Rds"))
+curvesTriangular = readRDS(here("data/curvesTriangular.Rds"))
+
+cornerCorner = readRDS(here("data/cornerCorner.Rds"))
+cornerSide = readRDS(here("data/cornerSide.Rds"))
+cornerTriangular = readRDS(here("data/cornerTriangular.Rds"))
+
+# Landmarks of Tonto Basin side-notched projectile points
+tontoSide = readRDS(here("data/RPMS-sideLdk.Rds"))
+tontoTriangular= readRDS(here("data/RPMS-triangularLdk.Rds"))
+
+tontoSideCorners = readRDS(here("data/RPMS-sideLdkcorners.Rds"))
+tontoTriangularCorners = readRDS(here("data/RPMS-triangularLdkcorners.Rds"))
+```
+
+
+```{r sessionInfo,eval=FALSE, include=FALSE}
+# display software information
+sessioninfo::session_info()
+```
+
+# Introduction {-}
+
+Geometric morphometrics (GM) is a quantitative approach to studying shape in two or three dimensions that has recently been adopted in archaeology [see @MacLeod2017-yl; @Okumura2019-ur; @Shott2010-fn for overviews]. It has numerous advantages over traditional lithic analyses, particularly because it can overcome the reliance on linear dimensions [@Shott2010-fn, 196-197]. Lithic artifacts can be assigned to typologies or directly compared without the use of a typology, as will be demonstrated in this chapter. There are several approaches within GM that provide similar results through different methods. One of the more traditional approaches is to place landmarks at homologous locations around the object. Landmarks can be augmented with semilandmarks, which are points placed relative to another using a consistent rule--usually equidistant spacing between two points [@Okumura2019-ur, 2-4]. Another common approach is to use elliptical Fourier analysis to compare the outlines of objects. Each method has strengths and weaknesses. A major purpose of this study is to evaluate the effectiveness of these methods for analyzing projectile points in the U.S. Southwest during the late prehistoric period (after the introduction of the bow and arrow). 
+
+Once the method of analyzing the points has been determined, the next step is to determine how to compare points using the results of the analysis. One approach would be to use an existing regional typology and to assign projectile points to the closest match. Another approach, would be to use cluster analysis to assign points to newly created types. The final approach would be to ignore typologies and compare the morphometric distance for each projectile point directly. 
+
+Regional analyses are fundamental parts of archaeology, but there are many challenges to overcome. One of these challenges is harmonizing the different categorization schemes (i.e., ontologies) used throughout the region. Another of these challenges, is determining whether the current categories are useful. The U.S. Southwest has a long history of regional ceramic typologies [e.g., @Colton1956-zy; @gladwin1930a; @Hargrave1932-ng; @Kidder1915-ae; @Martin1940-jg], but there are still disagreements, challenges, and competing definitions [@Duff1996-au]. Regional analyses in the Southwest, based in large part on pottery, have produced many useful insights [e.g., @Bernardini2005-ue; @Clark2019-bz]; @Hegmon2016-xw; @Mills2013-wq; @Peeples2018-ib]. However, one type of material culture that has received little attention--in the Southwest at least--is lithics (i.e., chipped stone). Projectile points are commonly discussed during the archaic period of the Southwest, and they are common topics in many other areas of the North American continent and world where they are found, but they are rarely discussed after the appearance of pottery.
+
+Despite the over-emphasis on pottery in the Southwest, there are some excellent resources on projectile point typologies [e.g., @Hoffman1997-hb; @Justice2002-cf; @Loendorf2004-tp]; @Sliva2006-nq]. However, ad hoc approaches are common, and these cannot be extrapolated beyond a specific project. Even using existing resources can make comparisons difficult. How does Tagg's [-@Tagg1994-wi, p.111] Type 23 compare to Sliva's [@Sliva2006-nq, p. 35] Cohonina Side-notched? There is an answer, but often it is easier to come up with a new typology schema than to try to harmonize existing work. 
+
+Another challenge that is not unique to projectile points is that interpretations may differ between analysts. Exactly when does a base begin curving enough to be called basal notched? Even the difference between a side-notched and a corner-notched point can, at times, be ambiguous. Not to mention the frustrating situation where a point appears to have one corner-notch and one side-notch. How should one place this point into an existing typology? These are questions that can be handled in different ways that differ from analyst to analyst. Idiosyncrasies and biases are impossible to be rid of entirely, but using approaches such as the those described here can reduce them and increase the reproducibility of the process.
+
+By necessity, this chapter covers a number of topics. The geographic area is the U.S. Southwest, but the methods and analysis are applicable to any area. The code and data used are available for reuse and modification. The primary purpose was to explore geometric morphometric methods using previously typed specimens from the Southwest and untyped specimens from the Tonto Basin. As mentioned, the corner-based landmark analysis proved most successful. Another purpose was to analyze the results with and without using typologies. The results demonstrate that both approaches are useful.
+
+# Background {-}
+
+In order to test the effectiveness of geometric morphometric methods, I needed a dataset of well-typed points that could be used as a validation set. I chose to use the typology published by Noel Justice [-@Justice2002-cf] for the simple reason that it is easily accessible and contains numerous illustrations. These illustrations were used as type specimens to compare projectile points from Tonto Basin in central Arizona (Figure `r figs`). These points were excavated in a series of large cultural resource management projects necessitated by work on the Roosevelt Dam. The largest project--the Roosevelt Platform Mound Study--included 129 sites. Most of the sites date between AD 1275 and 1325 with occupation continuing until around AD 1450 [@Rice1998-ku]. In the original analysis, Projectile points were classified according to small and large points and then subdivided based on morphological characteristics [@Rice1994-rk, p.727]. The typology used is an excellent demonstration of the difficulty in conducting projectile point studies in this area, as the typology is idiosyncratic to this specific project, and cannot be easily compared with other datasets. This is not a criticism of the analyst's choice to create a new typology, as no existing typology met the needs of the researchers. 
+
+```{r TontoBasinMap, fig.cap= 'Location of Tonto Basin in the state of Arizona, United States.'}
+figs = figs + 1
+knitr::include_graphics(here("figures/Tonto Basin.png"))
+```
+
+This is an exploratory analysis designed to minimize the amount of time spent collecting data and to be as reproducible as possible. There are a number of research steps that are often not addressed in publications. This missing documentation can make reproducing results challenging. I will describe the rational for relevant decisions, but the script used to generate the analysis will be included in an RMarkdown document in the supplemental material (see statement at end of manuscript).
+
+One of the key elements of this study is reproducibility, which necessitates automation. Projectile point analysis often includes assigning a point to a type based on linear metrics--sometimes angular measurements as well, and the presence or absence of various features (e.g., concave base, serrated blades, corner-notches). But often, the analyst is left to visually compare the point to various type specimens to identify the closest match. In my experience, this can be a frustrating way to spend your time. This method is harder to reproduce and subject to greater human error. Yet, algorithms are only part of the answer, and human judgment and context are still critical to any analysis. The key is to minimize the possibilities for error and maximize the opportunities for reproducibility, which I have tried to do here. Thus, one of the key questions of this research is to determine what input should be left to the analyst and what can be left to automated or standardized procedures.
+
+## Data collection {-}
+
+This study has two sources of data: illustrations of projectile points published by Justice [-@Justice2002-cf] and images of projectile points from collection held at Arizona State University. The datasets include 74 illustrations from Justice's publication and 90 projectile points from Tonto Basin. Many of Justice's types could not be included because there were so few complete, illustrated examples.
+
+It is worthwhile to question how an illustration compares to an image of a physical projectile point obtained from a flatbed scanner. Fortunately, illustrations have been published for some of the projectile points in this study. Figure `r figs` is a comparison of outlines created from an illustration and scan of the same projectile point. There are subtle differences between the two mediums--the base is slightly more rounded in places than the scan. These differences are detectable in a morphometrics analysis, however, the differences are minor as seen in figure `r figs + 1`. The quality of projectile point illustration can vary, but from this brief comparison there should be no hesitation using illustrations for 2D morphometric analysis.
+
+```{r pointComparison, fig.cap="Comparison of projectile point outlines for an illustration and a scan of the same projectile point (Oliver and Simon 1997: Figure 9.3; Specimen 33598)"}
+figs = figs + 1
+
+# ggplot(comparison, aes(V1,V2, color = method)) + 
+#   geom_path(alpha = .9, lwd = 3) +
+#   scale_color_viridis_d() +
+#   coord_equal() +
+#   theme_gdocs() + 
+#   theme(
+#     axis.title.x = element_blank(),
+#     axis.title.y = element_blank(),
+#     axis.text.x = element_blank(), 
+#     axis.text.y = element_blank(),
+#     axis.ticks = element_blank(),
+#     panel.grid = element_blank(),
+#     axis.line = element_blank(),
+#     panel.background = element_rect(fill = "transparent",colour = NA),
+#     plot.background = element_rect(fill = "transparent",colour = NA))
+
+# ggsave(here("figures/pointComparison.png"), dpi = 450, width = 5.38, height = 4)
+knitr::include_graphics(here("figures/pointComparison.png"))
+```
+
+```{r comparisonPCA, fig.cap="Principal component plot comparing the morphometric differences between a sample of 20 random projectile points and the illustration and scan of the same projectile point."}
+figs = figs + 1
+# suppressWarnings({
+#   
+#   outComparison$fac %<>% select(method)
+#   
+#   n = 20
+#   sample = outJustice %>% 
+#     slice(sample(1:length(outJustice),n))
+#   sample$fac = tibble(method = rep("sample",n))
+#   sample %<>%   
+#     mutate(method = factor(method)) %>% 
+#     combine(outComparison)
+#   # panel(sample, fac = "method")
+#   
+#   eSample = sample %>% efourier(12) %>% PCA()
+# })
+# png(here("figures/comparisonPCA.png"),res = 450, 5.38, height = 4, units = 'in')
+# plot_PCA(eSample,f = "method", zoom = 1.4, chull = F, points = F) %>% 
+#   layer_points(cex = 2, transp = .2)
+# dev.off()
+knitr::include_graphics(here("figures/comparisonPCA.png"))
+```
+
+Justice's projectile point illustrations were scanned, and the illustrations were converted into individual, solid black outlines and saved as jpeg files using common image-editing software. The open source statistical software R was used for all analyses [@R_Core_Team2022-wb]. The Momocs package [@Bonhomme2014-gt] has an import function to convert jpeg files into outlines. This is a major advantage over manual outlining processes used in popular GM software, such as tpsDig [@James_Rohlf2015-ui]. These outlines form the the basis of the geometric morphometric analyses conducted here with the exception of the landmark analyses. Landmarking was performed using the tpsDig software. The Momocs package has that capability, but I have found tpsDig's utility for landmarking to be superior. The Tonto Basin projectile point images were created using a flatbed scanner at 1200 DPI [^1]. The images were converted to outlines using the same process as the projectile point illustrations.
+
+[^1]: Many of the images were obtained by the author but some were generously contributed by Josh Watts--see the results of his study here: [@Watts2013-ub].
+
+## Projectile points of the Southwest {-}
+
+```{r types}
+nTypes = types %>% 
+  filter(Start < 1500 & End > 1100) %>% 
+  nrow()
+```
+
+There are a few regional typologies for projectile points in the Southwest: common examples were authored by Hoffman [-@Hoffman1997-hb], Justice [-@Justice2002-cf], Loendorf and Rice [-@Loendorf2004-tp], and Sliva [-@Sliva2006-nq]. Altogether, these four typologies include 129 projectile point types, although many overlap. In some cases, the authors identify correlates of the types. Many types date to the Archaic period, and thus predate the primary period we are interested in. Not all of the points were ascribed dates by the authors. Justice lists `r nTypes` points that overlap with the AD 1100-1500 period (the maximal dates for the Hohokam Classic period). Projectile points have restricted geographical boundaries, although these boundaries correspond to much greater areas than ceramic types typically do [@Buchanan2019-vn]. Figure `r figs` shows that several projectile point boundaries defined by Justice overlap with the Tonto Basin.
+
+```{r ProjectilePointBoundaries, fig.cap= 'Location of selected projectile point boundaries defined by Justice (2002) as digitized by Buchanan and colleagues (2019). Darker colors represent greater overlap in the number of projectile point boundaries.'}
+figs = figs + 1
+knitr::include_graphics(here("figures/ProjPointBoundaries.png"))
+```
+
+```{r}
+tblJusticeTypes = outJustice$fac %>% 
+  filter(Type %in% subTypes) %>% 
+  count(Cluster,Type,sort = T,name = "total") %>% 
+  arrange(Cluster,Type)
+```
+
+
+For this study, I digitized `r sum(tblJusticeTypes$total)` projectile point images from Justice's publication representing `r length(tblJusticeTypes$Type)` projectile point types (table `r tbls`). Justice placed each projectile point type into a cluster of related points. Figure `r figs` shows the projectile point outlines by type. The included projectile point types include some Archaic points and types not expected to overlap with the Tonto Basin projectile points. Archaic points are often found at later sites, and these types form useful comparisons, as they should not match to non-archaic projectile points. One limitation of this study is that projectile points must be complete, or nearly complete (minor damage to the tip or another part of the point that was judged to not significantly impact the shape of the point was ignored). Thus, not all of the illustrations included in Justice's book could be included in the outline analyses.
+
+```{r , echo=FALSE}
+tbls = tbls + 1
+cap = "Cluster Names, Types, and Number of Samples"
+```
+
+
+```{r tblJusticeTypes}
+knitr::kable(tblJusticeTypes, caption= cap, 
+             booktabs = T)
+```
+
+
+```{r JusticePointsTypesFinal, fig.cap= 'Outlines of projectile point illustrations taken from Justice (2002). Note that the projectile points are not scaled.'}
+figs = figs + 1
+knitr::include_graphics(here("figures/JusticePointsTypesFinal.png"))
+```
+
+## Tonto Basin Projectile Points {-}
+
+The sample of Tonto Basin points used in this study come from the Roosevelt Platform Mound Study. They come from 18 different sites that were grouped into five clusters in the original reports [see @Rice1998-ku for an overview]. Figure `r figs` shows the projectile points used in this study grouped by site cluster. The majority of these sites were occupied during the Roosevelt phase (AD 1275-1325) and early portion of the Gila phase (AD 1325-1450). The sites consist primarily of compounds, room blocks, and platform mounds. 
+
+```{r TontoBasinSites, fig.cap= 'Archaeology sites from Tonto Basin included in discussion. The original reports grouped each site into different clusters. Note that two of the platform mound sites are labeled separately.'}
+
+figs = figs + 1
+knitr::include_graphics(here("figures/TontoBasinSitesv2.png"))
+```
+
+The projectile points exhibit a variety of forms (see figure `r figs`). Rice [-@Rice1994-rk] classified Tonto Basin points into small and large complexes (likely equivalent to dart and arrow points), and further classified small points into the longer Salado series and the shorter Tonto series. These series were further subdivided using a custom classification scheme based on blade, tang, and base shape, as well as notch style. This is a logical way to classify the points, but it does not easily lend itself to regional comparisons, as other points were not classified in the same way. Nearly all of the points in the original sample consisted of side-notched or triangular points. Because the results of the analysis discussed below indicated that analyzing the points by shape was the most logical choice, only the triangular and side-notched points were used in this study.
+
+```{r TontoPointsFinal, fig.cap= 'Outlines of projectile points from sites in the Tonto Basin. Note that the projectile points are not scaled.'}
+# # import point outlines using Momoc
+# ls = list.files(here("ms/points/RPMS"), pattern = "jpg", full.names = T)
+# imgTonto = Momocs::import_jpg(ls, threshold = .5)
+# # convert to Momocs format
+# outTonto = imgTonto %>% Out()
+# # create metadata
+# fac = tibble(ID = names(outTonto)) %>% 
+#   left_join(tontoSide$fac) %>% 
+#   filter(!is.na(shape)) %>% 
+#   bind_rows(tibble(ID = names(outTonto)) %>% 
+#   left_join(tontoTriangular$fac) %>% 
+#     filter(!is.na(shape))) %>% 
+#   mutate(Area = factor(Area))
+# outTonto$fac = fac
+# # plot
+# png(filename = here("figures/TontoPoints.png"), width = 5.38, height = 3.5, units = "in", res = 450)
+# outTonto %>%
+#   arrange(Area) %>%
+#   panel(fac = "Area", palette = col_gallus)
+# labls = outTonto$fac$Area %>% unique
+# legend("right", fill = col_gallus(length(labls)),legend = labls, cex = .4, ncol = 1, inset = c(0,0),y.intersp = 1.5)
+# dev.off()
+# library(magick)
+# imgsPts = image_read(here("figures/TontoPoints.png"))
+# imgsPts %<>% image_trim() %>% image_border(color = "white", geometry = "10x10") %>%
+# image_scale("2421x1883")
+# image_write(imgsPts,here("figures/TontoPointsFinal.png"))
+figs = figs + 1
+knitr::include_graphics(here("figures/TontoPointsFinal.png"))
+```
+
+## Geometric Morphometrics {-}
+
+I used two GM methods in this analysis: elliptical Fourier analysis (EFA) and full generalized Procrustes alignment (GPA). Something to keep in mind is that GM methods analyze the form of the object separated from size, position, and orientation. Real-world measurements such as length and width are not explicitly included in these methods, although relative dimensions, such as length to width ratio are captured in the overall form of the object. Measurements such as length and weight can be included in various analyses but are not included here. The purpose of this study is to determine whether GM methods alone are sufficient to discriminate between types of projectile points and how they can best be used in the context of the U.S. Southwest.
+
+EFA was developed by Kuhl and Giardina [-@Kuhl1982-kd] as a quantitative means for describing a closed outline. There are a handful of papers that use EFA for lithic studies in archaeology [e.g., @Cardillo2010-ys; @Fox2015-ox; @Gingerich2014-cb; @Hoggard2019-yw; @Iovita2011-nz; @Iovita2011-zp]. The mathematics behind the method are complex to describe, which is one reason the method has not been adopted as quickly as it should be [see @Caple2017-mk]. Caple and colleagues [@Caple2017-mk] provide an excellent description of EFA for non-mathematicians, and the reader is referred to their treatise for more details. For my purposes, it is enough to know that EFA analysis requires a closed outline and a number of harmonics. The harmonics can be thought of as ellipses in a time series used to describe the shape of the object. Three harmonics can be used to create an oval shape, and 12 harmonics is sufficient for a complex projectile point outline. The number of harmonics necessary to capture the outline can be computed. For example, if you wish to reconstruct an outline with 99.9% accuracy, then the exact number of harmonics necessary can be calculated using the formula: $$ HarmonicPower_n = \frac{A^2_n+B^2_n+C^2_n+D^2_n}{2} $$ where n is the harmonic power and A, B, C, and D are the coefficients generated from the EFA. EFA creates a series of coefficients--four for each harmonic (A,B,C,D)--which can be used in multivariate statistics. Most commonly, principal components analysis (PCA) is used to transform the EFA values. The PCA results can then be used in distance-based methods such as clustering or even network analysis.
+
+Generalized Procrustes Analysis, or GPA, is primarily a way to align, scale, and rotate points [@Gower1975-uv]. Instead of outlines like EFA, GPA requires landmarks located on homologous locations for each object [@Rohlf1990-mp]. As an alternative to landmarks, semilandmarks can be placed at equidistant locations around the object. There is substantial discussion on the validity of certain types of landmarks and the use of semilandmarks as landmarks [e.g., @De_Groote2011-mh; @MacLeod2017-yl; @Okumura2019-ur; @Shott2010-fn]. Although there are some methods that can introduce error, there is no reason to exclude semi-landmarks outright. One disadvantage of traditional landmark analysis, compared to EFA, is that the analyst must be more involved in the selection of the number and placement of landmarks. Once the landmarks, or semilandmarks are placed on the objects, they are iteratively modified to achieve the best possible alignment between shapes without changing the relative positions between landmarks. This modification is done using the GPA procedure. As with EFA, the next step is usually to perform a PCA analysis. Landmark analysis using GPA is more common, so far, in archaeological analysis of stone tools than EFA [e.g., @Archer2018-zi; @Bischoff2020-zn; @Buchanan2015-dx; @Charlin2018-yg; @Fisher2018-jq; @Gingerich2014-cb; @Herzlinger2017-ce; @Lycett2010-od; @Riede2019-gb; @Selden2020-ni;  @Shott2010-fn; @Smith2015-qk; @Thulman2012-fo].
+
+The project was initially designed to compare the EFA results with a semilandmark analysis using the full outline of the projectile point by taking a sample of the outline and using the sampled coordinates as landmarks. Both approaches yielded similar results, but neither achieved satisfactory accuracy. The research design was then modified to include a more traditional landmark analysis to determine whether it would improve upon the initial design.
+
+There are some disadvantages to using landmarks, which is why the EFA/semilandmark approach was initially favored. The principal disadvantages to using landmarks are reproducibility and accuracy. Landmarks are more subjective in many ways than the semilandmarks or EFA [see @Shott2010-fn, 205]. The analyst must decide how many points to place, what topological points should be used as landmarks, and how many landmarks should be used. The placement of landmarks can vary between analysts and can be affected by the instruments or software used to collect or create the landmarks. Another major concern is the loss of detail from not considering the entire outline. Serrated points and points with more than one notch (this occurs more often than one might expect in Southwestern points) are difficult to capture without including a lot of landmarks, which are only applicable in a minority of situations. Secondary to these points, but still a concern, is that placing landmarks can be a more time-consuming process, as it is not as subject to automation as semilandmarks or EFA.
+
+Despite the disadvantages, landmarks are widely used for good reasons. I see two main advantages to landmark analysis in the context of projectile point analysis. The first is that the analyst can use their prior experience to determine what topological locations on the projectile point are most useful for discriminating between types. Decades of research on projectile points has refined many typologies into useful tools, despite their limitations. This knowledge can be applied to choosing appropriate landmarks. The second advantage is that outline analysis requires complete points, whereas landmark analysis can use damaged points. If chunks of the projectile are missing then the outline is not usable. Possibly, the missing portion could be estimated and filled in, but that process is more error prone than estimating missing landmarks. Landmarks can be placed on reconstructed projectile point illustrations or missing landmarks can be estimated mathematically [@Gunz2009-yb]. Most projectile points suffer from some type of damage and some of the projectile points I classified as "complete" suffer from minor damage to the tip of the point or elsewhere. The use of damaged points can greatly increase the available sample size for studies, which is often a major limitation in projectile point studies.
+
+Landmark configurations can vary significantly, depending on what the analysis is designed to measure and on the point type. Most of the area of a projectile point is usually in the blade--the portion above the notches. The base of the point, the portion below the notches, is also the hafting element. For projectile point typologies, the base of the point usually contains the most important elements for determining the type--notching style and basal shape being the two major elements. Thus, if most of the landmarks are on the blade margins then the base of the point is not getting as much coverage. It is more than just tradition that the base gets the most attention. Hafting a point is an important technological choice, more so than how long the point is. Furthermore, projectile points can be resharpened. Resharpening the blade margins can modify the shape of the blade and change its appearance. While it is possible to modify the base of the point and even convert a side-notched point into a corner-notched point and vice-versa, it is unlikely that this happened regularly with the small arrowpoints used in this study [@Loendorf2019-df]. 
+
+Because of the vagaries of placing landmarks, I used two configurations in this study. In the first configuration, the full outline was used. Only what I term, the corner of the projectile point was used in the second configuration. Figure `r figs` shows the first landmark configurations. The landmark configuration was designed to place fewer landmarks along the blade margins and more landmarks along the notches and the base. Separate curves were placed between the tip of the point and the notches and the notches and the base (or the tip and the base for triangular points), and landmarks were placed at equidistant locations along the curves. The second configuration is much sparser (figure `r figs + 1`). The landmarks were placed only on the right side of the point--this was arbitrarily chosen. For the side-notched and corner-notched points, landmarking started from the top of the notch, moved to the middle of the notch and then the bottom portion of the notch. For corner-notched points, this last landmark marked the right corner of the point, but for side-notched points an additional landmark was placed. The final landmark was placed at the center of the basal margin. Triangular points differed by placing the first landmark in the center of the blade margin. The first approach contains between 30 and 42 landmarks that cover the entire point outline, whereas the second ranges from 3 to 5 landmarks that cover only a portion of the projectile point. These extremes were chosen to provide significant contrast between approaches.
+
+```{r curvesStack, fig.cap= "Comparison of the full outline landmarks for corner-notched, side-notched and triangular shaped points from Justice's (2002) projectile point illustrations. Red dots indicate the mean location for each of the landmarks."}
+figs = figs + 1
+knitr::include_graphics(here("figures/curveComparison.png"))
+```
+
+```{r cornerComparison, fig.cap= "Comparison of the projectile point corner's landmarks for corner-notched, side-notched and triangular shaped points from Justice's (2002) projectile point illustrations. Red dots indicate the mean location for each of the landmarks."}
+figs = figs + 1
+knitr::include_graphics(here("figures/cornerComparison.png"))
+```
+
+# Comparisons {-}
+
+The first step in the analysis was to determine how well projectile points typed by Justice could be correctly assigned using GM methods. Linear discriminant analysis (LDA) was used to type the projectile points using the GM results. A general target of 0.85 was arbitrarily chosen as a minimum target for acceptable results--meaning that 85% of the projectile points were classified correctly. As mentioned previously, Justice placed each projectile point type into a cluster. Presumably, projectile point types in the same cluster should be more closely related than they are to projectile point types in other clusters. This gives another level of comparison that was used in addition to the types.
+
+The original intent was to compare EFA versus semilandmarks placed at equidistant locations around the outline. However, these results were unsatisfactory, and a more traditional landmark analysis was also completed. Because the number and placement of landmarks has a significant impact on the outcome of the study, two different landmark configurations were used. 
+
+Part of the reason the results were unsatisfactory for the EFA and semilandmarks was that the LDA analysis had trouble discriminating between notched and unnotched points and between side-notched and corner-notched points. These are some of the most basic distinctions that are made when analyzing projectile points. While it would be convenient if the analysis did not require an additional step, it is not difficult to separate the points into these basic shapes prior to the GM analysis. I separated the Justice points into three classes: side-notched, corner-notched, and triangular. For this study, I combined stemmed points into the corner-notched category. 
+
+Tables `r tbls`, `r tbls + 1`, and `r tbls + 2` show the LDA results by type, cluster, and by shape. These tables will be referred to in the sections that follow.
+
+```{r LDAResultsType, echo=FALSE}
+tbls = tbls + 1
+cap = "Linear Discriminant Analysis Results for Projectile Point Types"
+# this is the LDA results table created below but presented here for easier viewing
+tableLDAResultsType = rio::import(here('data/LDAResultsType.xlsx'))
+knitr::kable(tableLDAResultsType, caption= cap, 
+             booktabs = T)
+```
+
+```{r LDAResultsCluster, echo=FALSE}
+tbls = tbls + 1
+cap = "Linear Discriminant Analysis Results for Projectile Point Clusters"
+# this is the LDA results table created below but presented here for easier viewing
+tableLDAResultsCluster = rio::import(here('data/LDAResultsCluster.xlsx'))
+knitr::kable(tableLDAResultsCluster, caption= cap, 
+             booktabs = T)
+```
+
+```{r LDAResultsShape, echo=FALSE}
+tbls = tbls + 1
+cap = "Linear Discriminant Analysis Results for Projectile Point Shapes"
+# this is the LDA results table created below but presented here for easier viewing
+tableLDAResultsShape = rio::import(here('data/LDAResultsShape.xlsx'))
+knitr::kable(tableLDAResultsShape, caption= cap, 
+             booktabs = T)
+```
+
+## Elliptical Fourier Analysis {-}
+
+```{r include=FALSE}
+# hp = calibrate_harmonicpower_efourier(outJustice, thresh = .99)
+hp = 12
+eJustice = outJustice %>% efourier(hp) %>% PCA()
+# types = eJustice$fac$Type %>% table() %>% as.data.frame() %>% 
+#   filter(Freq > 7) %>% 
+#   pull(1) %>% 
+#   as.character()
+outJusticeSub = outJustice %>% Momocs::filter(Type %in% subTypes) %>% 
+  mutate(Type = factor(Type),
+         Cluster = droplevels(Cluster))
+# png(filename = here("figures/JusticePointsTypes.png"), width = 5.38, height = 3.5, units = "in", res = 450)
+# outJusticeSub %>%
+#   arrange(Type) %>%
+#   panel(fac = "Type", palette = col_gallus)
+# labls = outJusticeSub$fac$Type %>% unique %>%
+#   str_replace_all("Corner ","Corner\n") %>%
+#   str_replace_all("Notched ","Notched\n") %>%
+#   str_replace_all("Triangular ","Triangular\n") %>%
+#   str_replace_all("Alto Side ","Alto Side\n") %>%
+#   sort
+# legend("right", fill = col_gallus(length(labls)),legend = labls, cex = .4, ncol = 1, inset = c(0.02,0),y.intersp = 1.5)
+# dev.off()
+# library(magick)
+# imgsPts = image_read(here("figures/JusticePointsTypes.png"))
+# imgsPts %<>% image_trim() %>% image_border(color = "white", geometry = "10x10") %>%
+# image_scale("2421x1883")
+# image_write(imgsPts,here("figures/JusticePointsTypesFinal.png"))
+
+
+# outJusticeSub$fac$Type %>% levels()
+eJusticeSub = outJusticeSub %>% efourier(hp)
+pcaJusticeSub = eJusticeSub %>% PCA()
+# png(here("figures/JusticeEFAPCA.png"),res = 450, 5.38, height = 4, units = 'in')
+# par(mai = c(0,0,0,0))
+# plot_PCA(pcaJusticeSub, "Cluster", chull = F, zoom = 1.7,labelgroups = F, legend = T, points = F) %>% layer_points(cex = 2, transp = .25)
+# dev.off()
+```
+
+The EFA analysis was conducted using the Momocs packages [@Bonhomme2014-gt] in R [@R_Core_Team2022-wb]. The first step was to calculate the number of harmonics to use. In this case `r hp` harmonics described 99% of the variation in the projectile point outlines. Next, the EFA function was used on each projectile point, and then a PCA was used to reduce the dimensionality. Figure `r figs` shows the results of the PCA analysis. A useful feature of PCA plots using these data is that the morphospace can be plotted with the PCA results. The morphospace shows how the shapes vary along each axis of the PCA. In this case, PC1 (the first principal component) varies between short, wide points and long, narrow points. Some of shapes on the top and bottom left have inverted into impossible shapes, but note that no points fall into these areas. PC2 varies primarily from stemmed points to side-notched points. 
+
+```{r JusticeEFAPCA, fig.cap= 'Principal components plot showing projectile points from Justice (2002) and the morphospace based on an elliptical Fourier analysis. The points are labeled by the cluster assigned by Justice.'}
+figs = figs + 1
+knitr::include_graphics(here("figures/JusticeEFAPCA.png"))
+```
+
+```{r}
+# LDA results
+ldaResults = function(res,row,col){
+  res$CV.ce %>% 
+  as.data.frame() %>% 
+  setNames(col) %>% 
+  rownames_to_column(row) %>% 
+  mutate_at(vars(all_of(col)), round,digits = 2)
+}
+
+LDAResultsType = LDA(pcaJusticeSub,"Type") %>% 
+  ldaResults("Type","EFA")
+LDAResultsCluster = LDA(pcaJusticeSub,"Cluster") %>% 
+  ldaResults("Cluster","EFA")
+LDAResultsShape = LDA(pcaJusticeSub,"Shape") %>% 
+  ldaResults("Shape","EFA")
+```
+
+The first objective for the analysis of the Justice points is to determine how well the different point types can be discriminated. Meaning, how well can GM methods classify these points into their original categories. The LDA results were far from the target goal of 0.85 for most projectile point types, and only one type (Pueblo Alto Side Notched) met the target (see EFA results in Table 2). The results were better when the projectile point types were grouped into clusters, as shown in Table 3; however, none of the clusters met the target of 0.85. Even more disconcerting were the results shown in Table 4, as only the corner-notched points were discriminated with an accuracy greater than the target.
+
+The differences in classification accuracy between corner-notched, side-notched, and triangular points can perhaps best be explained by examining the mean shapes of each point. Figure `r figs` shows the mean shapes for the selected projectile point types. These are the mathematically average shapes when all of the projectile points in the type are combined. This has a tendency to average out the notches for the side-notched points, as the placement of these notches vary in height. Pueblo Alto Side Notched points appear to be an exception to the side-notched problem, as they have the highest classification accuracy. Corner notched and stemmed points must, by definition, always have their notches or stems in the same location, even though the shape of the notches and stems still varies. This explains why it is easier to discriminate them from other point types. As for the side-notched and triangular points, sometimes the notches are subtle and the notches are only a small part of the whole form, which is clearly not a strong enough element to separate triangular and side-notched points consistently.
+
+```{r meanShapes, fig.cap="Mean shapes by projectile point type using elliptical Fourier analysis."}
+figs = figs + 1
+knitr::include_graphics(here("figures/meanShapesEFA.png"))
+```
+
+## Semilandmarks {-}
+
+```{r include=FALSE}
+# pSet = seq(10,100,10)
+# classAccuracy = map(pSet,function(p){
+#   fgsemiLdk = outJusticeSub %>%
+#     coo_sample(p) %>%
+#     Ldk() %>%
+#     fgProcrustes() %>%
+#     PCA()
+#   x = LDA(fgsemiLdk,"Type") %>%
+#     classification_metrics()
+#   x$accuracy
+# })
+# classAccuracy
+
+fgsemiLdk = outJusticeSub %>%
+  coo_sample(30) %>%
+  Ldk() %>%
+  fgProcrustes()
+fgPCA = fgsemiLdk %>% PCA()
+# png(here("figures/JusticeSLDKPCA.png"),res = 450, 5.38, height = 4, units = 'in')
+# par(mai = c(0,0,0,0))
+# plot_PCA(fgPCA, "Cluster", chull = F, zoom = 1.5,labelgroups = F, legend = T, points = F) %>% layer_points(cex = 2, transp = .25)
+# dev.off()
+```
+
+
+```{r include=FALSE}
+LDAResultsType %<>% left_join(LDA(fgPCA,"Type") %>% 
+  ldaResults("Type","semiLdk"))
+
+LDAResultsCluster %<>% left_join(LDA(fgPCA,"Cluster") %>% 
+  ldaResults("Cluster","semiLdk"))
+
+LDAResultsShape %<>% left_join(LDA(fgPCA,"Shape") %>% 
+  ldaResults("Shape","semiLdk"))
+
+LDAResultsShape %<>% bind_rows(
+  LDAResultsShape %>% 
+  summarize(across(2:3,mean)) %>% 
+  mutate_all(round,2) %>% 
+  mutate(Shape = "Mean", .before = 1)
+) %>% 
+  rowwise() %>% 
+  mutate(Mean = mean(c(EFA, semiLdk)) %>% round(2))
+
+# rio::export(LDAResultsShape,here("data/LDAResultsShape.xlsx"))
+```
+
+```{r}
+# semilandmark mean shapes
+# m = MSHAPES(eJusticeSub, 'Type',nb.pts = 80)$shp
+# m %<>%
+#   Out %>%
+#   coo_rotate(-1.57) 
+# m$fac = tibble(Type = names(m) %>% factor)
+# plotdf = m %>% as_df() %>% unnest(coo) %>%
+#   mutate(x = coo[,1],
+#          y = coo[,2]) %>% 
+#   select(-coo) %>% 
+#   mutate(Type = str_replace_all(Type," ", "\n"))
+# plotdf %<>% bind_rows(plotdf %>% 
+#   group_by(Type) %>% 
+#   slice(1)
+# )
+
+# ggplot(plotdf,aes(x,y)) +
+#   geom_path(lwd = 1.75,) +
+#   coord_equal() +
+#   theme_void() +
+#   theme(panel.spacing.x = unit(1.5,"lines")) +
+#   scale_x_continuous(expand = c(0.3, 0.3)) +
+#   facet_wrap(~Type, ncol = 4)
+# ggsave(here("figures/meanShapesEFA.png"), dpi = 450, width = 5.38, height = 4)
+
+# m = MSHAPES(fgsemiLdk, 'Type',nb.pts = 80)$shp
+# m %<>%
+#   Out
+# m$fac = tibble(Type = names(m) %>% factor)
+# # m %>% mosaic
+# 
+# plotdf2 = m %>% as_df() %>% unnest(coo) %>%
+#   mutate(x = coo[,1],
+#          y = coo[,2]) %>% 
+#   select(-coo) %>% 
+#   mutate(Type = str_replace_all(Type," ", "\n"))
+# plotdf2 %<>% bind_rows(plotdf2 %>% 
+#   group_by(Type) %>% 
+#   slice(1)
+# )
+# 
+# ggplot(plotdf2,aes(x,y)) +
+#   geom_path(lwd = 1.75,) +
+#   coord_equal() +
+#   theme_void() +
+#   theme(panel.spacing.x = unit(1.5,"lines")) +
+#   scale_x_continuous(expand = c(0.3, 0.3)) +
+#   facet_wrap(~Type, ncol = 4)
+
+```
+
+Analyzing projectile points using semilandmarks is comparable to the EFA analysis. The major analytical choice is how many landmarks to use. Each projectile point is represented by a varied number of coordinates that represent its outline. The number of points must be standardized so that each projectile point has an identical number of coordinates, which is done using the Momocs package. The choice of how many points to use does affect the GM analysis. To solve this problem, I tried different numbers of semilandmarks varying from 10 to 100. More than 100 points appears to no longer have a substantial effect on the results. Each projectile point was sampled multiple times and then all of the points were classified using LDA according to the same procedures used for the EFA analysis. The results of this test ranged from 65% accuracy (10 points) to 73% accuracy (30 points--the number used for the final analysis) with somewhat higher numbers of points consistently measuring in at 64% accuracy. 
+
+The morphospace (see figure `r figs`) based on the PCA analysis has similar dimensions of variation as the EFA analysis. The major improvement in accuracy (the 'semiLdk column of Tables 2-4) is perhaps due to the better alignment generated by the GPA procedure, but that is only speculation. 
+
+```{r JusticeSLDKPCA, fig.cap= 'Principal Components Plots showing projectile points from Justice (2002) and the morphospace based on a semilandmark generalized procrustes alignment. The points are labeled by the cluster assigned by Justice.'}
+figs = figs + 1
+knitr::include_graphics(here("figures/JusticeSLDKPCA.png"))
+```
+
+Regardless of the reason, a jump from 64% classification to 72% is a substantial improvement. It does not reach the target of greater than 85% classification accuracy, but it is a step in the right direction. The mean shapes are nearly identical to the EFA analysis, which indicates that this method suffers from the same problems with side-notched and triangular points, but it does a somewhat better job differentiating corner-notched and side-notched points. Curiously, it does a worse job differentiating triangular points. It seems the side-notches are still a problem. 
+
+## Landmarks {-}
+
+```{r include=FALSE}
+curvesCornerldk = curvesCorner %>% 
+  Ldk() %>% 
+  fgProcrustes()
+# png(here("figures/curvesCorner.png"),res = 450, 5.38, height = 4, units = 'in')
+# curvesCornerldk %>% stack(meanshape = T, ldk_cex = 1.5,title = "Corner-notched")
+# dev.off()
+
+curvesSideldk = curvesSide %>% 
+  Ldk() %>% 
+  fgProcrustes()
+
+# png(here("figures/curvesSide.png"),res = 450, 5.38, height = 4, units = 'in')
+# curvesSideldk %>% stack(meanshape = T, ldk_cex = 1.5,title = "Side-notched")
+# dev.off()
+
+curvesTriangularldk = curvesTriangular %>% 
+  Ldk() %>% 
+  fgProcrustes()
+
+# png(here("figures/curvesTriangular.png"),res = 450, 5.38, height = 4, units = 'in')
+# curvesTriangularldk %>% stack(meanshape = T, ldk_cex = 1.5,title = "Triangular")
+# dev.off()
+```
+
+```{r include=FALSE}
+curvesCornerPCA = curvesCornerldk %>% PCA()
+curvesSidePCA = curvesSideldk %>% PCA()
+curvesTriangularPCA = curvesTriangularldk %>% PCA()
+
+# calculate separate and combined LDA results
+x1 = LDA(curvesCornerPCA,"Type") %>% ldaResults("Type","Ldk")
+x2 = LDA(curvesSidePCA,"Type") %>% ldaResults("Type","Ldk")
+x3 = LDA(curvesTriangularPCA,"Type") %>% ldaResults("Type","Ldk")
+
+
+LDAResultsType %<>% left_join(bind_rows(x1,x2,x3))
+
+# calculate separate and combined LDA results
+x1 = LDA(curvesCornerPCA,"Cluster") %>% ldaResults("Cluster","Ldk")
+x2 = LDA(curvesSidePCA,"Cluster") %>% ldaResults("Cluster","Ldk")
+x3 = LDA(curvesTriangularPCA,"Cluster") %>% ldaResults("Cluster","Ldk")
+
+
+LDAResultsCluster %<>% left_join(bind_rows(x1,x2,x3) %>% group_by(Cluster) %>% summarize_all(mean))
+```
+
+Neither the semilandmarks nor EFA adequately distinguished between point types or between point shapes. Identifying notches was particularly troublesome. A solution to this problem was to use landmarks and explicitly identify the notches or lack of notches. No comparison was made between projectile point shapes using landmark analysis, as initial experiments determined that it was best to use different landmark procedures for the different shapes. Perhaps machine learning may solve this problem [see @Castillo_Flores2019-cs; @MacLeod2018-aj; @Nash2016-mc]. Triangular points require a different approach than side-notched points, and even side-notched and corner-notched/stemmed points require different procedures.
+
+The LDA results for the first landmark configuration (Ldk in Tables 2-4) are much better than EFA and better than the semilandmark analysis, but still not as accurate as desired. The biggest underperformer by far was Pueblo Side Notched Straight Base at 0.43. All of the previous analyses struggled to capture basal shape distinctions, but this analysis struggled more so. What is particularly notable is that Cottonwood Triangular points were classified perfectly whereas they were previously the worst performing type. As Table 3 shows, the cluster assignments performed well. If the problems sorting Cienega from Snaketown can be sorted out, then the results would be excellent.
+
+```{r SideNotchedDifferences, include=FALSE}
+# png(here("figures/SideNotchedDifferences.png"),res = 450, width = 5.38, height = 4, units = 'in')
+# outJustice %>% 
+#   filter(Type %in% c("Awatovi Side Notched","Pueblo Side Notched Concave Base")) %>% 
+#   mutate(Type = factor(Type)) %>% 
+#   panel(fac = "Type", palette = col_spring)
+# legend("bottomright", fill = col_spring(2),legend = c("Awatovi Side Notched","Pueblo Side Notched"), cex = .8, ncol = 2, inset = c(.07, 0))
+# dev.off()
+```
+
+
+```{r include=FALSE}
+cornerCornerldk = cornerCorner %>% 
+  Ldk() %>% 
+  fgProcrustes()
+# png(here("figures/cornerCorner.png"),res = 450, 5.38, height = 4, units = 'in')
+# cornerCornerldk %>% stack(meanshape = T, ldk_cex = 2,title = "Corner-notched")
+# dev.off()
+
+cornerSideldk = cornerSide %>% 
+  Ldk() %>% 
+  fgProcrustes()
+
+# png(here("figures/cornerSide.png"),res = 450, 5.38, height = 4, units = 'in')
+# cornerSideldk %>% stack(meanshape = T, ldk_cex = 2,title = "Side-notched")
+# dev.off()
+
+cornerTriangularldk = cornerTriangular %>% 
+  Ldk() %>% 
+  fgProcrustes()
+
+# png(here("figures/cornerTriangular.png"),res = 450, 5.38, height = 4, units = 'in')
+# cornerTriangularldk %>% stack(meanshape = T, ldk_cex = 2,title = "Triangular")
+# dev.off()
+```
+
+```{r simpleStack, fig.cap= ''}
+# figs = figs + 1
+# knitr::include_graphics(here("figures/simpleComparison.png"))
+```
+
+
+```{r include=FALSE}
+cornerCornerPCA = cornerCornerldk %>% PCA()
+cornerSidePCA = cornerSideldk %>% PCA()
+cornerTriangularPCA = cornerTriangularldk %>% PCA()
+
+# calculate separate and combined LDA results
+x1 = LDA(cornerCornerPCA,"Type") %>% ldaResults("Type","Ldk-corner")
+x2 = LDA(cornerSidePCA,"Type") %>% ldaResults("Type","Ldk-corner")
+x3 = LDA(cornerTriangularPCA,"Type") %>% ldaResults("Type","Ldk-corner")
+
+LDAResultsType %<>% left_join(bind_rows(x1,x2,x3))
+
+# average by analysis
+LDAResultsType %<>% bind_rows(
+  LDAResultsType %>% 
+  summarize(across(2:5,mean)) %>% 
+  mutate(Type = "Mean", .before = 1)
+) %>% 
+  rowwise() %>% 
+  mutate(Mean = mean(c(EFA, `semiLdk`, Ldk,`Ldk-corner`))) %>% 
+  mutate_if(is.double,round,2)
+rio::export(LDAResultsType,here("data/LDAResultsType.xlsx"))
+
+# calculate separate and combined LDA results
+x1 = LDA(cornerCornerPCA,"Cluster") %>% ldaResults("Cluster","Ldk-corner")
+x2 = LDA(cornerSidePCA,"Cluster") %>% ldaResults("Cluster","Ldk-corner")
+x3 = LDA(cornerTriangularPCA,"Cluster") %>% ldaResults("Cluster","Ldk-corner")
+
+LDAResultsCluster %<>% left_join(bind_rows(x1,x2,x3) %>% group_by(Cluster) %>% summarize_all(mean))
+
+LDAResultsCluster %<>% bind_rows(
+  LDAResultsCluster %>% 
+  summarize(across(2:5,mean)) %>% 
+  mutate(Cluster = "Mean", .before = 1)
+) %>% 
+  rowwise() %>% 
+  mutate(Mean = mean(c(EFA, `semiLdk`, Ldk,`Ldk-corner`))) %>% 
+  mutate_if(is.double,round,2)
+# rio::export(LDAResultsCluster,here("data/LDAResultsCluster.xlsx"))
+```
+
+The final analysis used the second landmark configuration--the projectile point corners. These results proved superior to the first landmark configuration and are almost 20% points higher in accuracy than the EFA results on average. The lowest type for accuracy was again Pueblo Side Notched Straight Base, but it improved from the first landmark configuration to 0.71 from 0.43. The accuracy results were more consistent and accurate. With some enhancement, this configuration could likely achieve better results.
+
+Not only did landmark analysis provide superior accuracy, but it will also make it easier to use larger sample sizes. Presumably, notching style is an important attribute that should be captured in the analysis. If EFA or the semilandmark analysis as conducted here fails to sufficiently emphasize the notches, then these methods are insufficient for my purposes. While landmark analysis is more time-consuming, the use of the second configuration does reduce the burden of landmarking.
+
+# Tonto Basin Points {-}
+
+The initial intent was to classify the Tonto Basin points using the analysis of the Justice points; however, the limited sample size limits the validity of the exercise. The analysis was not futile though, as the second landmark configuration using the corners of the projectile points proved the most effective. I therefore used the same landmark configuration to analyze the points from Tonto Basin. The results of the GPA and PCA analysis were used in a hierarchical cluster analysis using Ward's method [see @Murtagh2014-mb]. Figure `r figs` is a network graph showing the results. Several sites in Tonto Basin only had one or two types of projectile points (low sample sizes were again problematic), but some of the larger, well-excavated sites shared all or most of the projectile point types. It is beyond the purpose of this study to explore the patterns in this data, but the methods clearly provide useful data for exploratory analysis. 
+
+```{r include=FALSE}
+tontoSidefg = tontoSideCorners %>% Ldk() %>% fgProcrustes()
+# tontoSidefg %>% stack(meanshape = T, ldk_cex = 2)
+tontoTriangularfg = tontoTriangularCorners %>% Ldk() %>% fgProcrustes()
+# tontoTriangularfg %>% stack(meanshape = T, ldk_cex = 1)
+tontoSidepca = tontoSidefg %>% PCA()
+tontoTriangularpca = tontoTriangularfg %>% PCA()
+# tontoSidepca %>% plot_PCA()
+# tontoTriangularpca %>% plot_PCA(zoom = 2.6)
+```
+
+```{r}
+# cluster
+eClust = hclust(dist(tontoSidepca$x),method = "ward.D2")
+# png(filename = "figures/clusterdendrogramSide.png", width = 7.5, height = 4.5, units = "in", res = 300)
+# plot(eClust,labels = F,xlab = "",sub = "")
+cut = .8
+# abline(h = cut, col = "red")
+# dev.off()
+eCut = cutree(eClust, h = cut)
+# eCut %>% table()
+tontoSidepca %<>% mutate(clust = eCut %>% factor)
+# plot_PCA(tontoSidepca,"clust")
+# LDA(tontoSidepca,"clust")
+# LDA(tontoSidepca,"clust") %>% plot_LDA()
+
+eClust = hclust(dist(tontoTriangularpca$x),method = "ward.D2")
+# png(filename = "figures/clusterdendrogramTriangular.png", width = 7.5, height = 4.5, units = "in", res = 300)
+# plot(eClust,labels = F,xlab = "",sub = "")
+cut = .33
+# abline(h = cut, col = "red")
+# dev.off()
+eCut = cutree(eClust, h = cut)
+# eCut %>% table()
+tontoTriangularpca %<>% mutate(clust = eCut %>% factor)
+# plot_PCA(tontoTriangularpca,"clust")
+# LDA(tontoTriangularpca,"clust")
+# LDA(tontoTriangularpca,"clust") %>% plot_LDA()
+
+# setdiff(tontoTriangular$fac$ID,tontoTriangularfg$fac$ID)
+tontoTriangular %<>% 
+  filter(ID != "RPMS-6546-1") %>% 
+  mutate(clust = eCut %>% factor)
+# tontoTriangular %>% arrange(clust) %>% mosaic(~clust, lwd = 3)
+# tontoTriangular$fac %>% select(ID,clust)
+# tontoTriangularpca$fac %>% select(ID,clust)
+
+
+# graph results with bipartite network
+# links = table(tontoTriangular$fac$site,
+#               tontoTriangular$fac$clust) %>% 
+#   as.data.frame() %>% 
+#   setNames(c("from","to","weight")) %>% 
+#   filter(weight>0) %>% 
+#   mutate(to = paste0("tri-",to)) %>%
+#   bind_rows(
+#     table(tontoSidepca$fac$site,
+#           tontoSidepca$fac$clust) %>% 
+#   as.data.frame() %>% 
+#   setNames(c("from","to","weight")) %>% 
+#   filter(weight>0) %>% 
+#   mutate(to = paste0("side-",to))
+# )
+# g = graph_from_data_frame(links, directed = F)
+# V(g)$type = bipartite.mapping(g)$type
+# V(g)$color <- ifelse(V(g)$type, "lightblue", "salmon")
+# V(g)$shape <- ifelse(V(g)$type, "circle", "square")
+# png(here("figures/TontoClusterNetwork.png"),res = 450, 5.38, height = 4, units = 'in')
+# par(mar = c(0,0,0,0))
+# plot(g, vertex.size=20, vertex.label.cex=0.6)
+# dev.off()
+```
+
+```{r TontoClusterNetwork, fig.cap= 'Bipartite network graph displaying assigned projectile point clusters for side-notched and triangular points in Tonto Basin and Tonto Basin sites.'}
+figs = figs + 1
+knitr::include_graphics(here("figures/TontoClusterNetwork.png"))
+```
+
+```{r}
+# non-cluster -- arrange by similarity
+d = dist(tontoSidepca$x) %>% 
+  as.matrix %>% 
+  as.data.frame() %>% 
+  rownames_to_column('from') %>% 
+  pivot_longer(-from, names_to = "to",values_to = 'distance') %>% 
+  filter(from != to) %>% 
+  arrange(distance)
+cut = quantile(d$distance,.1)
+d %<>% 
+  filter(distance < cut)
+library(igraph)
+g = graph_from_data_frame(d = d,directed = F)
+g = simplify(g, remove.multiple = T, edge.attr.comb = "first")
+# g
+# plot(g)
+
+library(ggimage)
+gg = ggnetwork(g) %>% 
+  as_tibble() %>% 
+  mutate(image = paste0("ms/points/RPMS/",name,".png")) %>% 
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend, color = distance, label = name, image = image)) +
+  geom_edges(linewidth = 2,alpha = .75) +
+  scale_color_viridis_c(option = "A") +
+  # geom_point(size = 6) +
+  geom_image(aes(color = NULL),size = .025) +
+  theme_blank()
+
+# plotly::ggplotly()
+# ggsave("figures/TontoSideDistanceNetwork.png",plot = gg,dpi = 450, width = 5.38)
+
+d = dist(tontoTriangularpca$x) %>% 
+  as.matrix %>% 
+  as.data.frame() %>% 
+  rownames_to_column('from') %>% 
+  pivot_longer(-from, names_to = "to",values_to = 'distance') %>% 
+  filter(from != to) %>% 
+  arrange(distance)
+cut = quantile(d$distance,.1)
+d %<>% 
+  filter(distance < cut)
+library(igraph)
+g = graph_from_data_frame(d = d,directed = F)
+g = simplify(g, remove.multiple = T, edge.attr.comb = "first")
+
+gg = ggnetwork(g) %>% 
+  as_tibble() %>% 
+  mutate(image = paste0("ms/points/RPMS/",name,".png")) %>% 
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend, color = distance, label = name, image = image)) +
+  geom_edges(linewidth = 2,alpha = .75) +
+  scale_color_viridis_c(option = "A") +
+  # geom_point(size = 6) +
+  geom_image(aes(color = NULL),size = .025) +
+  theme_blank()
+
+# plotly::ggplotly()
+# ggsave("figures/TontoTriangularDistanceNetwork.png",plot = gg,dpi = 450, width = 5.38)
+```
+
+The final question I wished to address in this study was whether it was necessary to use a typology in a GM analysis of projectile points. There are many ways to answer this question, but in short, the answer is no. That does not mean typologies are not useful, but they can mask important variation. The following is one way to approach analyzing projectile points without using a typology.
+
+Because the results of the GM analyses can be projected into multidimensional space, the distance between these values is meaningful and can be directly compared. One way to flatten multidimensional space is to calculate the Euclidean distance between each point and display the results as a network graph, as in figures `r figs` and `r figs + 1`. This way each point can be compared directly without grouping the points into types. The results are messier, but subtle variation in morphology is easier to visualize this way. The closer the points are to each other, the more similar they are in shape, keeping in mind that only the corners of the projectile points (from the notches down for the side-notched points) were used in this analysis. Many of the points clustered closely together, indicating a common shape across the sites. The side-notched points have a particularly large cluster of typical Hohokam side-notched points. Yet there are also a large number of points that do not closely match the points, which indicates that there is also a lot of variation. This variation may represent idiosyncracies, exchange, migration, novice knappers, or a different intention for the point. Regardless of the purpose, the GM analysis better captures the "otherness" of a point than classifying a point as other/unknown or worse, forcing it into a category it does not belong in.
+
+```{r TontoSideDistanceNetwork, fig.cap= 'Network graph displaying side-notched points from Tonto Basin as nodes with ties showing the morphometric distance between points. Darker colors represent stronger ties. Note that only the strongest 10\\% of ties are shown.'}
+figs = figs + 1
+knitr::include_graphics(here("figures/TontoSideDistanceNetwork.png"))
+```
+
+```{r TontoTriangularDistanceNetwork, fig.cap= 'Network graph displaying triangular points from Tonto Basin as nodes with ties showing the morphometric distance between points. Darker colors represent stronger ties. Note that only the strongest 10\\% of ties are shown.'}
+figs = figs + 1
+knitr::include_graphics(here("figures/TontoTriangularDistanceNetwork.png"))
+```
+
+The clustering analysis provided several different projectile point types and provided an overview of what sites shared similar projectile points. This type of analysis can be combined with architectural or other data to look for correlations or patterns that provide insights into the behavior of the people who made and used these points. Yet the analyst must take care to ensure the clustering groups are appropriately sized and the results make sense. One way to view the data more closely is to look at a distance network graph to view the variation in morphometric shape. This way typological distinctions will not mask the variation.
+
+# Conclusion {-}
+
+These analyses provided significant variation in their results, yet they also demonstrated positive results. While EFA underperformed all of the other analyses, a different dataset may favor this analysis. Some of the types performed better for EFA than other types, which suggests that EFA may be the optimal choice for some datasets. A clear result from this exploratory analysis is that GM analysis is not a one-size-fits-all approach. In this case, using the corner of the projectile point--from the base to the middle of the basal margin or from the middle of the blade if the point is triangular--proved to be the most useful method. The main advantage of this method was that it provided the most accurate reproduction of Justice's original classification of the projectile points. Another advantage is that broken points are easier to use with this method. If one half of the point is missing, either the top or the lateral margin, it does not affect the analysis. This increases the number of points available for analysis tremendously compared to only using whole points. The final advantage, though minor, is that the landmarking analysis is simple and only requires three to five landmarks.
+
+I mentioned in the introduction how difficult it is to conduct regional analyses with projectile points in the U.S. Southwest. The main difficulty is harmonizing existing typologies and then fitting new projectile points into this typology. While the sample size available for this study was too small to attempt classifying the Tonto Basin points according to Justice's typology, it would be possible to do so with these methods. However, this chapter also demonstrated that it is possible to type points using common clustering methods which may better capture the variation in projectile point morphology than previously used types. Furthermore, it is possible to analyze projectile points without resorting to types. The distances between projectile point morphologies can be computed and compared directly. These distances could even be aggregated and summarized regionally. The main challenge for the regional analysis is obtaining the projectile point outlines or landmarks. Once these are obtained, thousands of points can be analyzed and assigned to clusters relatively quickly.
+
+Compared to a traditional analysis of linear metrics and weights, a GM analysis can capture much more information and provide more informative ways to analyze and visualize the data. The visualization capabilities of GM is one of its greatest strengths, as it allows the analyst to see the data they are working with, visually validate their results, and share their findings in visually compelling ways. Additionally, this analysis is more reproducible and adaptable than traditional lithic analyses. While the analyst still has a lot of control over a GM analysis, the results should be less biased than analyses based on visual type comparisons.
+
+# Acknowledgements {-}
+
+Special thanks to Zac Selden, Michael Shott, Bernard Means, and Loren Davis for teaching a geometric morphometric workshop that was my first major introduction to these methods. Josh Watts, Matt Peeples, Melissa Powell, Chris Caseldine, and several volunteers who assisted with this research.
+
+# Data, scripts, and supplementary information availability {-}
+
+All relevant data and scripts are available at the following [DOI 10.17605/OSF.IO/ZGE9Q](https://osf.io/zge9q/) and on GitHub at [github.com/bischrob/TontoBasinPoints](https://github.com/bischrob/TontoBasinPoints). The code used in the analysis is included in the manuscript.Rmd file used to create this manuscript, although some lines have been commented out to improve efficiency.
+
+# Conflicts of interest disclosure {-}
+
+The author declares that they comply with the PCI rule of having no financial conflicts of interest in relation to the content of the article.
+
+\nocite{Oliver1997-lk}
+
+\printbibliography[notcategory=ignore]
