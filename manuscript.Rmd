@@ -26,6 +26,7 @@ editor_options:
   chunk_output_type: console
 output:  
   bookdown::pdf_document2:
+    keep_tex: true
     fig_caption: true
     template: template/main.tex
     citation_package: biblatex
