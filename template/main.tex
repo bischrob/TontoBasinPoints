@@ -2,7 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\documentclass[a4paper]{article}
+\documentclass[letterpaper]{article}
 
 %%%%%%%%% extract variables of interest from YAML header   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -129,7 +129,9 @@ $endif$
 \input{template/preamble.tex}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%Start document%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
+\addlogo
 \beginningpreprint  %%% add header and other info
-\linenumbers
+%\linenumbers
+\pagenumbering{arabic}
 $body$              %%% add text proper
 \end{document}

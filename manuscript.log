@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.5.19)  19 MAY 2023 10:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.5.19)  21 AUG 2023 10:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -23,7 +23,11 @@ File: size10.clo 2022/07/02 v1.4n Standard LaTeX file (size option)
 \belowcaptionskip=\skip49
 \bibindent=\dimen140
 ) (template/preamble.tex (C:\Users\rjbischo\AppData\Local\Programs\MiKTeX\tex/l
-atex/xstring\xstring.sty
+atex/url\url.sty
+\Urlmuskip=\muskip16
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+) (C:\Users\rjbischo\AppData\Local\Programs\MiKTeX\tex/latex/xstring\xstring.st
+y
 (C:\Users\rjbischo\AppData\Local\Programs\MiKTeX\tex/generic/xstring\xstring.te
 x
 \integerpart=\count193
@@ -308,10 +312,7 @@ Package: logreq 2010/08/04 v1.0 xml request logger
 \lrq@indent=\count303
 (C:\Users\rjbischo\AppData\Local\Programs\MiKTeX\tex/latex/logreq\logreq.def
 File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
-)) (C:\Users\rjbischo\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
-\Urlmuskip=\muskip16
-Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
-)
+))
 \c@tabx@nest=\count304
 \c@listtotal=\count305
 \c@listcount=\count306
@@ -880,6 +881,12 @@ e.sty
 Package: changepage 2009/10/20 v1.0c check page and change page layout
 \c@cp@cntr=\count460
 \cp@tempcnt=\count461
+) (C:\Users\rjbischo\AppData\Local\Programs\MiKTeX\tex/latex/titling\titling.st
+y
+Package: titling 2009/09/04 v2.1d maketitle typesetting
+\thanksmarkwidth=\skip104
+\thanksmargin=\skip105
+\droptitle=\skip106
 ))
 
 Package biblatex Warning: Conflicting options.
@@ -924,16 +931,16 @@ LaTeX Font Info:    ... okay on input line 95.
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
 * driver: pdftex
-* paper: a4paper
+* paper: letterpaper
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(72.26999pt, 452.9679pt, 72.26999pt)
-* v-part:(T,H,B)=(72.26999pt, 700.50687pt, 72.26999pt)
-* \paperwidth=597.50787pt
-* \paperheight=845.04684pt
-* \textwidth=452.9679pt
-* \textheight=700.50687pt
+* h-part:(L,W,R)=(72.26999pt, 469.75502pt, 72.26999pt)
+* v-part:(T,H,B)=(72.26999pt, 650.43001pt, 72.26999pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=469.75502pt
+* \textheight=650.43001pt
 * \oddsidemargin=0.0pt
 * \evensidemargin=0.0pt
 * \topmargin=-37.0pt
@@ -1047,76 +1054,71 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             See the microtype manual for details.
 \c@mv@tabular=\count469
 \c@mv@boldtabular=\count470
+<badge_PCI_Archaeology.png, id=72, 168.63pt x 155.58125pt>
+File: badge_PCI_Archaeology.png Graphic file (type png)
+<use badge_PCI_Archaeology.png>
+Package pdftex.def Info: badge_PCI_Archaeology.png  used on input line 96.
+(pdftex.def)             Requested size: 168.62958pt x 155.58086pt.
 LaTeX Font Info:    Font shape `T1/opensans-TLF/m/n' will be
-(Font)              scaled to size 22.39185pt on input line 96.
+(Font)              scaled to size 22.39185pt on input line 97.
 LaTeX Font Info:    Font shape `T1/opensans-TLF/sb/n' will be
-(Font)              scaled to size 22.39185pt on input line 96.
+(Font)              scaled to size 22.39185pt on input line 97.
 LaTeX Font Info:    Font shape `T1/opensans-TLF/m/n' will be
-(Font)              scaled to size 12.9599pt on input line 96.
+(Font)              scaled to size 12.9599pt on input line 97.
 
 (C:\Users\rjbischo\AppData\Local\Programs\MiKTeX\tex/latex/microtype\mt-cmr.cfg
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <14.4> on input line 96.
+(Font)              <14.4> on input line 97.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 96.
+(Font)              <7> on input line 97.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 96.
+(Font)              <5> on input line 97.
 LaTeX Font Info:    Font shape `T1/opensans-TLF/m/n' will be
-(Font)              scaled to size 6.29996pt on input line 96.
+(Font)              scaled to size 6.29996pt on input line 97.
 LaTeX Font Info:    Font shape `T1/opensans-TLF/b/n' will be
-(Font)              scaled to size 8.99994pt on input line 96.
+(Font)              scaled to size 8.99994pt on input line 97.
 LaTeX Font Info:    Font shape `T1/opensans-TLF/b/n' will be
-(Font)              scaled to size 10.79993pt on input line 96.
+(Font)              scaled to size 10.79993pt on input line 97.
 
 LaTeX Font Warning: Font shape `T1/opensans-TLF/b/sc' undefined
-(Font)              using `T1/opensans-TLF/b/n' instead on input line 96.
+(Font)              using `T1/opensans-TLF/b/n' instead on input line 97.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 96--96
+Underfull \hbox (badness 10000) in paragraph at lines 97--97
 
  []
 
 LaTeX Font Info:    Font shape `T1/opensans-TLF/m/n' will be
-(Font)              scaled to size 4.49997pt on input line 96.
-LaTeX Font Info:    Trying to load font information for T1+cmss on input line 9
-6.
-(C:\Users\rjbischo\AppData\Local\Programs\MiKTeX\tex/latex/base\t1cmss.fd
-File: t1cmss.fd 2022/07/10 v2.5l Standard LaTeX font definitions
-)
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `cmss' (encoding: T1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-LaTeX Font Info:    Font shape `T1/opensans-TLF/m/n' will be
-(Font)              scaled to size 7.19995pt on input line 96.
+(Font)              scaled to size 7.19995pt on input line 97.
 LaTeX Font Info:    Font shape `T1/opensans-TLF/b/n' will be
-(Font)              scaled to size 7.19995pt on input line 96.
+(Font)              scaled to size 7.19995pt on input line 97.
 LaTeX Font Info:    Font shape `T1/opensans-TLF/b/it' will be
-(Font)              scaled to size 7.19995pt on input line 96.
+(Font)              scaled to size 7.19995pt on input line 97.
 
-Overfull \hbox (16.85727pt too wide) in paragraph at lines 96--96
+Overfull \hbox (16.85727pt too wide) in paragraph at lines 97--97
 [][][][] 
  []
 
 [1
 
 {C:/Users/rjbischo/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/r
-jbischo/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/opensans/a_jg4h6q.enc}]
+jbischo/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/opensans/a_jg4h6q.enc} <.
+/badge_PCI_Archaeology.png>]
 *geometry* verbose mode - [ newgeometry ] result:
 * driver: pdftex
-* paper: a4paper
+* paper: letterpaper
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(72.26999pt, 452.9679pt, 72.26999pt)
-* v-part:(T,H,B)=(72.26999pt, 700.50687pt, 72.26999pt)
-* \paperwidth=597.50787pt
-* \paperheight=845.04684pt
-* \textwidth=452.9679pt
-* \textheight=700.50687pt
+* h-part:(L,W,R)=(72.26999pt, 469.75502pt, 72.26999pt)
+* v-part:(T,H,B)=(72.26999pt, 650.43001pt, 72.26999pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=469.75502pt
+* \textheight=650.43001pt
 * \oddsidemargin=0.0pt
 * \evensidemargin=0.0pt
 * \topmargin=-37.0pt
@@ -1138,252 +1140,117 @@ jbischo/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/opensans/a_jg4h6q.enc}]
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 LaTeX Font Info:    Font shape `T1/opensans-TLF/b/n' will be
-(Font)              scaled to size 12.9599pt on input line 99.
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.113 
-       [2
+(Font)              scaled to size 12.9599pt on input line 101.
+[1
 
 ]
-<figures/TontoBasin.png, id=131, 469.755pt x 364.9635pt>
+Package marginnote Info: Using workaround for absolute page number on input lin
+e 115.
+<figures/TontoBasin.png, id=139, 469.755pt x 364.9635pt>
 File: figures/TontoBasin.png Graphic file (type png)
 <use figures/TontoBasin.png>
-Package pdftex.def Info: figures/TontoBasin.png  used on input line 121.
-(pdftex.def)             Requested size: 452.9679pt x 351.92026pt.
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.125 
-       [3 <./figures/TontoBasin.png>]
+Package pdftex.def Info: figures/TontoBasin.png  used on input line 123.
+(pdftex.def)             Requested size: 469.75502pt x 364.9626pt.
 LaTeX Font Info:    Font shape `T1/opensans-TLF/m/n' will be
-(Font)              scaled to size 10.79993pt on input line 129.
-<figures/pointComparison.png, id=142, 388.8126pt x 289.08pt>
+(Font)              scaled to size 10.79993pt on input line 131.
+[2] [3 <./figures/TontoBasin.png>]
+<figures/pointComparison.png, id=155, 388.8126pt x 289.08pt>
 File: figures/pointComparison.png Graphic file (type png)
 <use figures/pointComparison.png>
-Package pdftex.def Info: figures/pointComparison.png  used on input line 137.
-(pdftex.def)             Requested size: 452.9679pt x 336.80188pt.
-<figures/comparisonPCA.png, id=143, 280.4076pt x 145.0218pt>
+Package pdftex.def Info: figures/pointComparison.png  used on input line 139.
+(pdftex.def)             Requested size: 469.75502pt x 349.28502pt.
+<figures/comparisonPCA.png, id=156, 280.4076pt x 145.0218pt>
 File: figures/comparisonPCA.png Graphic file (type png)
 <use figures/comparisonPCA.png>
-Package pdftex.def Info: figures/comparisonPCA.png  used on input line 141.
-(pdftex.def)             Requested size: 452.9679pt x 234.26573pt.
+Package pdftex.def Info: figures/comparisonPCA.png  used on input line 143.
+(pdftex.def)             Requested size: 469.75502pt x 242.94896pt.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 144.
+(Font)              <8> on input line 146.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 144.
+(Font)              <6> on input line 146.
 LaTeX Font Info:    Font shape `T1/opensans-TLF/m/n' will be
-(Font)              scaled to size 5.39996pt on input line 144.
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.151 
-       [4]
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.151 
-       [5 <./figures/pointComparison.png> <./figures/comparisonPCA.png>]
-<figures/ProjPointBoundaries.png, id=171, 388.8126pt x 308.8338pt>
+(Font)              scaled to size 5.39996pt on input line 146.
+[4 <./figures/pointComparison.png>]
+<figures/ProjPointBoundaries.png, id=179, 388.8126pt x 308.8338pt>
 File: figures/ProjPointBoundaries.png Graphic file (type png)
 <use figures/ProjPointBoundaries.png>
 Package pdftex.def Info: figures/ProjPointBoundaries.png  used on input line 15
-3.
-(pdftex.def)             Requested size: 452.9679pt x 359.81668pt.
-<figures/JusticePointsTypesFinal.png, id=173, 388.8126pt x 302.4098pt>
+5.
+(pdftex.def)             Requested size: 469.75502pt x 373.15283pt.
+<figures/JusticePointsTypesFinal.png, id=181, 388.8126pt x 302.4098pt>
 File: figures/JusticePointsTypesFinal.png Graphic file (type png)
 <use figures/JusticePointsTypesFinal.png>
 Package pdftex.def Info: figures/JusticePointsTypesFinal.png  used on input lin
-e 180.
-(pdftex.def)             Requested size: 452.9679pt x 352.3322pt.
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.188 
-       [6 <./figures/ProjPointBoundaries.png>]
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.188 
-       [7 <./figures/JusticePointsTypesFinal.png>]
-<figures/TontoPointsFinal.png, id=189, 194.4063pt x 149.358pt>
+e 182.
+(pdftex.def)             Requested size: 469.75502pt x 365.39095pt.
+[5 <./figures/comparisonPCA.png>] [6 <./figures/ProjPointBoundaries.png>] [7 <.
+/figures/JusticePointsTypesFinal.png>]
+<figures/TontoPointsFinal.png, id=205, 194.4063pt x 149.358pt>
 File: figures/TontoPointsFinal.png Graphic file (type png)
 <use figures/TontoPointsFinal.png>
-Package pdftex.def Info: figures/TontoPointsFinal.png  used on input line 192.
-(pdftex.def)             Requested size: 452.9679pt x 348.05821pt.
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.204 
-       [8 <./figures/TontoPointsFinal.png>]
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.212 
-       [9]
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.218 
-       [10]
-<figures/curveComparison.png, id=265, 433.62pt x 433.62pt>
+Package pdftex.def Info: figures/TontoPointsFinal.png  used on input line 194.
+(pdftex.def)             Requested size: 469.75502pt x 360.95744pt.
+[8 <./figures/TontoPointsFinal.png>] [9] [10]
+<figures/curveComparison.png, id=283, 433.62pt x 433.62pt>
 File: figures/curveComparison.png Graphic file (type png)
 <use figures/curveComparison.png>
-Package pdftex.def Info: figures/curveComparison.png  used on input line 220.
-(pdftex.def)             Requested size: 452.9679pt x 452.99205pt.
-<figures/cornerComparison.png, id=266, 433.62pt x 433.62pt>
+Package pdftex.def Info: figures/curveComparison.png  used on input line 222.
+(pdftex.def)             Requested size: 469.75502pt x 469.7781pt.
+<figures/cornerComparison.png, id=284, 433.62pt x 433.62pt>
 File: figures/cornerComparison.png Graphic file (type png)
 <use figures/cornerComparison.png>
-Package pdftex.def Info: figures/cornerComparison.png  used on input line 224.
-(pdftex.def)             Requested size: 452.9679pt x 452.99205pt.
-<figures/JusticeEFAPCA.png, id=269, 388.8126pt x 289.08pt>
+Package pdftex.def Info: figures/cornerComparison.png  used on input line 226.
+(pdftex.def)             Requested size: 469.75502pt x 469.7781pt.
+[11] [12 <./figures/curveComparison.png (PNG copy)>] [13 <./figures/cornerCompa
+rison.png (PNG copy)>] [14]
+<figures/JusticeEFAPCA.png, id=312, 388.8126pt x 289.08pt>
 File: figures/JusticeEFAPCA.png Graphic file (type png)
 <use figures/JusticeEFAPCA.png>
-Package pdftex.def Info: figures/JusticeEFAPCA.png  used on input line 306.
-(pdftex.def)             Requested size: 452.9679pt x 336.80188pt.
+Package pdftex.def Info: figures/JusticeEFAPCA.png  used on input line 308.
+(pdftex.def)             Requested size: 469.75502pt x 349.28502pt.
 
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.310 
-       [11]
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.310 
-       [12 <./figures/curveComparison.png (PNG copy)>]
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.310 
-       [13 <./figures/cornerComparison.png (PNG copy)>]
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.310 
-       [14 <./figures/JusticeEFAPCA.png (PNG copy)>]
-<figures/meanShapesEFA.png, id=292, 388.8126pt x 289.08pt>
+Overfull \hbox (2.02179pt too wide) in paragraph at lines 313--314
+[]\T1/opensans-TLF/m/n/10 The dif-fer-ences in clas-si-fi-ca-tion ac-cu-racy be
+-tween corner-notched, side-notched, and tri-an-gu-lar pro-jec-tile points
+ []
+
+[15 <./figures/JusticeEFAPCA.png (PNG copy)>]
+<figures/meanShapesEFA.png, id=318, 388.8126pt x 289.08pt>
 File: figures/meanShapesEFA.png Graphic file (type png)
 <use figures/meanShapesEFA.png>
-Package pdftex.def Info: figures/meanShapesEFA.png  used on input line 314.
-(pdftex.def)             Requested size: 452.9679pt x 336.80188pt.
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.322 
-       [15 <./figures/meanShapesEFA.png>]
-<figures/JusticeSLDKPCA.png, id=299, 388.8126pt x 289.08pt>
+Package pdftex.def Info: figures/meanShapesEFA.png  used on input line 316.
+(pdftex.def)             Requested size: 469.75502pt x 349.28502pt.
+[16 <./figures/meanShapesEFA.png>]
+<figures/JusticeSLDKPCA.png, id=326, 388.8126pt x 289.08pt>
 File: figures/JusticeSLDKPCA.png Graphic file (type png)
 <use figures/JusticeSLDKPCA.png>
-Package pdftex.def Info: figures/JusticeSLDKPCA.png  used on input line 326.
-(pdftex.def)             Requested size: 452.9679pt x 336.80188pt.
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.330 
-       [16 <./figures/JusticeSLDKPCA.png (PNG copy)>]
-<figures/TontoClusterNetwork.png, id=308, 388.8126pt x 289.08pt>
+Package pdftex.def Info: figures/JusticeSLDKPCA.png  used on input line 328.
+(pdftex.def)             Requested size: 469.75502pt x 349.28502pt.
+[17 <./figures/JusticeSLDKPCA.png (PNG copy)>]
+<figures/TontoClusterNetwork.png, id=337, 388.8126pt x 289.08pt>
 File: figures/TontoClusterNetwork.png Graphic file (type png)
 <use figures/TontoClusterNetwork.png>
 Package pdftex.def Info: figures/TontoClusterNetwork.png  used on input line 35
-0.
-(pdftex.def)             Requested size: 452.9679pt x 336.80188pt.
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.356 
-       [17]
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.356 
-       [18 <./figures/TontoClusterNetwork.png>]
-<figures/TontoSideDistanceNetwork.png, id=323, 388.8126pt x 364.9635pt>
+2.
+(pdftex.def)             Requested size: 469.75502pt x 349.28502pt.
+[18] [19 <./figures/TontoClusterNetwork.png>]
+<figures/TontoSideDistanceNetwork.png, id=354, 388.8126pt x 364.9635pt>
 File: figures/TontoSideDistanceNetwork.png Graphic file (type png)
 <use figures/TontoSideDistanceNetwork.png>
 Package pdftex.def Info: figures/TontoSideDistanceNetwork.png  used on input li
-ne 358.
-(pdftex.def)             Requested size: 452.9679pt x 425.21239pt.
-<figures/TontoTriangularDistanceNetwork.png, id=324, 388.8126pt x 364.9635pt>
+ne 360.
+(pdftex.def)             Requested size: 469.75502pt x 440.97234pt.
+<figures/TontoTriangularDistanceNetwork.png, id=355, 388.8126pt x 364.9635pt>
 File: figures/TontoTriangularDistanceNetwork.png Graphic file (type png)
 <use figures/TontoTriangularDistanceNetwork.png>
 Package pdftex.def Info: figures/TontoTriangularDistanceNetwork.png  used on in
-put line 362.
-(pdftex.def)             Requested size: 452.9679pt x 425.21239pt.
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.366 
-       [19 <./figures/TontoSideDistanceNetwork.png>]
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.366 
-       [20 <./figures/TontoTriangularDistanceNetwork.png>]
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.382 
-       [21]
+put line 364.
+(pdftex.def)             Requested size: 469.75502pt x 440.97234pt.
+[20] [21 <./figures/TontoSideDistanceNetwork.png>] [22 <./figures/TontoTriangul
+arDistanceNetwork.png>]
 LaTeX Font Info:    Font shape `T1/opensans-TLF/m/it' will be
-(Font)              scaled to size 8.99994pt on input line 397.
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.397 \printbibliography[notcategory=ignore]
-                                                          %%% add text proper [
-22]
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.397 \printbibliography[notcategory=ignore]
-                                                          %%% add text proper [
-23]
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.397 \printbibliography[notcategory=ignore]
-                                                          %%% add text proper [
-24]
-pdfTeX warning (ext4): destination with the same identifier (name{page.}) has b
-een already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.398 \end{document}
-                     [25] (manuscript.aux)
+(Font)              scaled to size 8.99994pt on input line 399.
+[23] [24] [25] [26] [27] (manuscript.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
@@ -1394,29 +1261,27 @@ Package logreq Info: Writing requests to 'manuscript.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 28977 strings out of 476411
- 582050 string characters out of 5787718
- 1876845 words of memory out of 5000000
- 48824 multiletter control sequences out of 15000+600000
- 527977 words of font info for 83 fonts, out of 8000000 for 9000
+ 29062 strings out of 476411
+ 583221 string characters out of 5787718
+ 1873845 words of memory out of 5000000
+ 48885 multiletter control sequences out of 15000+600000
+ 526659 words of font info for 79 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 94i,9n,95p,2028b,2088s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\rjbischo\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi375\e
-css0800.pk><C:/Users/rjbischo/AppData/Local/Programs/MiKTeX/fonts/type1/ascende
-r/opensans/OpenSans-Bold.pfb><C:/Users/rjbischo/AppData/Local/Programs/MiKTeX/f
-onts/type1/ascender/opensans/OpenSans-BoldItalic.pfb><C:/Users/rjbischo/AppData
-/Local/Programs/MiKTeX/fonts/type1/ascender/opensans/OpenSans-Italic.pfb><C:/Us
-ers/rjbischo/AppData/Local/Programs/MiKTeX/fonts/type1/ascender/opensans/OpenSa
-ns-Regular.pfb><C:/Users/rjbischo/AppData/Local/Programs/MiKTeX/fonts/type1/asc
-ender/opensans/OpenSans-SemiBold.pfb><C:/Users/rjbischo/AppData/Local/Programs/
-MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/rjbischo/AppData/Loc
-al/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/rjbischo/
-AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/User
-s/rjbischo/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pf
-b>
-Output written on manuscript.pdf (25 pages, 25369660 bytes).
+ 94i,9n,95p,2028b,2092s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<C:/Users/rjbischo/AppData/Local/Programs/MiKTeX/fonts/type1/ascender/opensan
+s/OpenSans-Bold.pfb><C:/Users/rjbischo/AppData/Local/Programs/MiKTeX/fonts/type
+1/ascender/opensans/OpenSans-BoldItalic.pfb><C:/Users/rjbischo/AppData/Local/Pr
+ograms/MiKTeX/fonts/type1/ascender/opensans/OpenSans-Italic.pfb><C:/Users/rjbis
+cho/AppData/Local/Programs/MiKTeX/fonts/type1/ascender/opensans/OpenSans-Regula
+r.pfb><C:/Users/rjbischo/AppData/Local/Programs/MiKTeX/fonts/type1/ascender/ope
+nsans/OpenSans-SemiBold.pfb><C:/Users/rjbischo/AppData/Local/Programs/MiKTeX/fo
+nts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/rjbischo/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Users/rjbischo/AppData/L
+ocal/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/rjbisch
+o/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb>
+Output written on manuscript.pdf (28 pages, 25440386 bytes).
 PDF statistics:
- 509 PDF objects out of 1000 (max. 8388607)
- 114 named destinations out of 1000 (max. 500000)
- 22223 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 573 PDF objects out of 1000 (max. 8388607)
+ 142 named destinations out of 1000 (max. 500000)
+ 19668 words of extra memory for PDF output out of 20736 (max. 10000000)
 

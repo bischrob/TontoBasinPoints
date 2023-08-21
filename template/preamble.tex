@@ -3,6 +3,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%main packages to use%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{url}
 \usepackage{xstring}
 \usepackage[margin=1in,marginparwidth=4.2cm,marginparsep=0.5cm]{geometry}
 \usepackage{ifthen}
@@ -38,7 +39,7 @@ maxnames=99,
 maxcitenames=2,
 giveninits=true,
 terseinits=true,
-url=false
+url=true
 ]{biblatex}
 %%%%%%%%%%%%%%%%%%%%%%end main package list %%%%%%%%%%%%%%%%%%%%%%%
 
@@ -77,7 +78,7 @@ url=false
 \newcommand{\mybibexclude}[1]{\addtocategory{ignore}{#1}}
 % Clickable references. Use \url{www.example.com} or \href{www.example.com}{description} to add a clicky url
 \usepackage{nameref}
-\usepackage[pdfborder={0 0 0},   
+\usepackage[pdfborder={0 0 0},
     colorlinks=true,
     linkcolor=blue,
     urlcolor=blue,
@@ -116,20 +117,29 @@ url=false
 \usepackage{changepage}
 % Adjust caption style
 \usepackage[aboveskip=1pt,labelfont=bf,labelsep=period,singlelinecheck=off]{caption}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{titling}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newcommand{\addlogo}{%
+ \begin{center}
+  \href{https://doi.org/10.24072/pci.archaeo.100320}{\includegraphics{badge_PCI_Archaeology.png}}
+  \end{center}
+}
 
 %%%%%%begin the preprint%%%%%%%%%%
-  \newcommand{\beginningpreprint}{
+\newcommand{\beginningpreprint}{
 \vspace*{0.5cm}
 \begin{flushleft}
-\baselineskip=30pt
+\baselineskip=10pt
 %no page number
 \pagenumbering{gobble}
+%\href{\preprintdoi}{}
 {\Huge
 \fontseries{sb}\selectfont{\preprinttitle}}
 \end{flushleft}
-\vspace*{0.25cm}
+\vspace*{0.15cm}
 \begin{flushleft}
 \Large
 \listauthors
@@ -140,23 +150,23 @@ url=false
 {\raggedright
 \authorshipnotes}
 
-\vspace*{0.5cm}
+\vspace*{0.25cm}
 \fcolorbox{pciblue}{pciblue}{
 \parbox{\textwidth - 2\fboxsep}{
 \vspace{0.25cm}
-\begin{internallinenumbers}
+%\begin{internallinenumbers}
 
 \textbf{\large{\textsc{Abstract}}}\\
 \preprintabstract\\
 
 \footnotesize{\textbf{\emph{Keywords: }}\preprintkeywords}
-\end{internallinenumbers}
+%\end{internallinenumbers}
 
 \vspace{0.25cm}}
 }
 \newgeometry{margin=1in}
 }
- 
+
 
 
 
