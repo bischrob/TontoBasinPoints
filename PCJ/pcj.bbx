@@ -1,0 +1,21 @@
+\ProvidesFile{pcj.bbx}
+\RequireBibliographyStyle{authoryear}
+\ExecuteBibliographyOptions{sortcites=true,maxnames=10,terseinits=true,sorting=nyt,dashed=false,uniquename=false,uniquelist=minyear,date=year,isbn=false,clearlang=true}
+
+\renewcommand*{\revsdnamepunct}{} % no comma between family and given names
+
+\renewbibmacro{in:}{\ifentrytype{article}{}{\printtext{\bibstring{in}\intitlepunct}}} % remove 'In:' before journal name
+
+\DeclareFieldFormat[article]{pages}{#1}           % remove pp.
+\DeclareFieldFormat[article]{volume}{\textbf{#1}} % bold for volume number
+\DeclareFieldFormat[article,inbook,incollection,inproceedings,misc,thesis,unpublished]{title}{\emph{#1}} % title without quotes
+\DeclareFieldFormat{doi}{\url{https://doi.org/#1}}
+
+\DeclareNameFormat{author}{%
+    \namepartfamily\ifdefvoid{\namepartgiven}{}{\space\namepartgiveni}%
+    \ifthenelse{\value{listcount}<\value{liststop}}{\addcomma\space}{}%
+    \usebibmacro{name:andothers}%
+}
+
+\AtEveryBibitem{\ifentrytype{article}{\clearfield{number}}{}} % don't print issue numbers
+\AtEveryBibitem{\clearlist{language}}

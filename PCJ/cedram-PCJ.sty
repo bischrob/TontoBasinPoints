@@ -1,0 +1,165 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{cedram-PCJ}
+\RequirePackage{cedram-graphics}
+\RequirePackage[a4paper,headheight=13pt,footskip=20pt,margin=1in]{geometry}
+\RequirePackage[fitting]{tcolorbox}
+\RequirePackage{transparent}
+\RequirePackage{pdflscape}
+\RequirePackage{fancyhdr}
+\RequirePackage[explicit]{titlesec}
+\RequirePackage{titletoc}
+\RequirePackage[font=small,labelfont=bf,labelsep=endash,justification=justified]{caption}
+\RequirePackage[tracking,spacing,kerning]{microtype}
+\RequirePackage[default]{lato}
+\RequirePackage{adjustbox}
+\RequirePackage{pdfpages}
+\RequirePackage{booktabs}
+{\def\sfdefault{cmss}\RequirePackage{sfmath}}
+
+\def\currentjournaltitle{Peer Community Journal}
+
+\definecolor{PCIdark}{HTML}{346E92}
+\definecolor{PCImedium}{HTML}{77A4BF}
+\definecolor{PCIlight}{HTML}{9FBFD2}
+\AtBeginDocument{\hypersetup{colorlinks=true,allcolors=PCIdark}}
+
+\renewcommand{\headrule}{{\color{PCIdark}\hrule\@height\headrulewidth\@width\headwidth\vskip-\headrulewidth}}
+\renewcommand{\footrule}{{\color{PCIdark}\hrule\@height\footrulewidth\@width\headwidth\vskip-\footrulewidth}}
+\renewcommand{\headrulewidth}{1pt}
+\renewcommand{\footrulewidth}{1pt}
+\fancyhfoffset{1cm}
+\fancyhead[OR,EL]{\color{PCIdark}\thepage}
+\ExplSyntaxOn
+\fancyhead[ER,OL]{\color{PCIdark}
+    \seq_item:Nn \cdr_db_author_seq {1}
+    \int_case:nnF {\seq_count:N \cdr_db_author_seq} {
+        {1} {}
+        {2} {~\&~ \seq_item:Nn \cdr_db_author_seq {2}}
+    } {~et~al.}
+}
+\ExplSyntaxOff
+\fancyfoot{}
+\fancyfoot[L]{\color{PCIdark}\publname, Vol.\ \currentvolume\ (\currentyear), article \thearticle}
+\fancyfoot[R]{\color{PCIdark}\url@sfstyle\printDOI}
+\pagestyle{fancy}
+
+\fancypagestyle{firstpage}{\renewcommand{\headrulewidth}{0pt}\fancyhead{}}
+
+\cdr@ifeq{\cdr@mode}{plain}{\pagestyle{empty}\cdr@pagedegardefalse}{}
+
+\setlength{\parskip}{0pt plus 1pt}
+
+\ExplSyntaxOn
+    \prop_new:N \cdr_PCIs_prop       % Maps PCI code to full name
+    \seq_new:N \cdr_UGAE_seq         % List of PCI codes co-edited with UGAE
+    \tl_new:N \cdr_PCI_tl            % Code of current PCI (set by \setPCI)
+    \newif\ifcdr@UGAE \cdr@UGAEfalse % Whether current PCI is co-edited with UGAE
+
+    % Declare a PCI, use starred version if co-edited with UGAE.
+    \NewDocumentCommand {\addPCI} { s m m } {
+        \prop_gput:Nnn \cdr_PCIs_prop {#2} {#3}
+        \IfBooleanT {#1} {\seq_gput_right:Nn \cdr_UGAE_seq {#2}}
+    }
+
+    % Set current PCI for an article, and set \ifcdr@UGAE accordingly.
+    \NewDocumentCommand {\setPCI} {m} {
+        \tl_set:Nn \cdr_PCI_tl {#1}
+        \seq_if_in:NnTF \cdr_UGAE_seq {#1} {\cdr@UGAEtrue} {\cdr@UGAEfalse}
+    }
+
+    % Full name of the current PCI, to use in the template
+    \NewDocumentCommand {\PCIname} {} {
+        \prop_get:NVNTF \cdr_PCIs_prop \cdr_PCI_tl \l_tmpa_tl {\l_tmpa_tl} {\MissingInfo{ERROR}}
+    }
+
+    \addPCI {animsci} {Animal~Science}
+    \addPCI {archaeo} {Archaeology}
+    \addPCI {cneuro} {Circuit~Neuroscience}
+    \addPCI {ecology} {Ecology}
+    \addPCI {ecotoxenvchem} {Ecotoxicology~and~Environmental~Chemistry}
+    \addPCI {evolbiol} {Evolutionary~Biology}
+    \addPCI {forestwoodsci} {Forest~\&~Wood~Sciences}
+    \addPCI {genomics} {Genomics}
+    \addPCI {infections} {Infections}
+    \addPCI {mcb} {Mathematical~\&~Computational~Biology}
+    \addPCI {microbiol} {Microbiology}
+    \addPCI {networksci} {Network~Science}
+    \addPCI {neuro} {Neuroscience}
+    \addPCI {paleo} {Paleontology}
+    \addPCI {rr} {Registered~Reports}
+    \addPCI {zool} {Zoology}
+    \addPCI*{shs} {Something~with~UGAE} % remove once there is an actual co-edited PCI declared
+    \addPCI*{healthmovsci} {Health~\&~Movement~Sciences}
+
+    \seq_new:N \cdr_corresp_seq
+    \NewDocumentCommand {\PCIcorresp} {v} {\seq_put_right:Nn \cdr_corresp_seq {#1}}
+    \NewDocumentCommand {\cdr@listcorresp} {} {
+        \seq_if_empty:NTF \cdr_corresp_seq {{\color{red}\textbf{NOT ~ SET}}} {
+            \seq_set_map:NNn \l_tmpa_seq \cdr_corresp_seq { \url@sfstyle\href{mailto:##1}{##1} }
+            \begin{tabular}{@{}r@{}}
+                \seq_use:Nn \l_tmpa_seq { \\ }
+            \end{tabular}
+        }
+    }
+
+    \NewDocumentCommand {\PCIincludepdf} {v} {
+        \pdfximage{#1}
+        \int_set:Nn \l_tmpa_int {0}
+        \bool_while_do:nn {\int_compare_p:nNn \l_tmpa_int < \pdflastximagepages} {
+            \int_incr:N \l_tmpa_int
+            \hbox_set:Nn \l_tmpa_box {
+                \includegraphics[page={\int_use:N\l_tmpa_int}]{#1}
+            }
+            \dim_compare:nNnT {\box_wd:N\l_tmpa_box} > {1.1\pdfpagewidth}
+                {\box_set_ht:Nn \l_tmpa_box \pdfpagewidth \box_rotate:Nn \l_tmpa_box {90}}
+            \begin{textblock}{10}(0,0)
+                \noindent \box_use:N \l_tmpa_box \par \vfill
+            \end{textblock}
+            \leavevmode\newpage
+        }
+    }
+\ExplSyntaxOff
+
+\NewDocumentCommand {\setPCIconf} {m} {
+  \CDRsetmeta {pciconf} {#1}
+}
+
+\ifcdr@pagedegarde
+    \addtocounter{page}{1}
+    \def\@makePagedeGarde{
+        \cdr@input{pagedegarde}\newpage
+    }
+    \def\@maketitle{\thispagestyle{fancy}}
+\else
+    \def\@maketitle{\thispagestyle{empty}}
+    \addtocounter{page}{2}%
+\fi
+
+\def\cdr@postabstracthook{\@setgenabstract{keywords}}
+\def\thepage{\arabic{page}}
+\def\RDOI#1{\xdef\cdr@RDOI{#1}}
+\def\recDOI{\urlstyle{same}\sf\url{https://doi.org/\cdr@RDOI}}
+
+\def\contentsnamefont{\normalfont\large\bfseries}
+
+\def\appendixname{Appendix}
+\titleformat{\section}{\normalfont\large\bfseries\centering}{\cdr@ifeq{\sectionname}{}{}{\sectionname~}\thesection.}{.5em}{#1}
+\titleformat{\subsection}{\normalfont\bfseries}{\thesubsection.}{.5em}{#1}
+\titleformat{\subsubsection}[runin]{\normalfont\itshape}{\thesubsubsection.}{.5em}{#1. }
+\titleformat{\paragraph}[runin]{\normalfont}{}{.5em}{#1. }
+\titleformat{\subparagraph}[runin]{\normalfont}{}{.5em}{#1. }
+\titleformat{name=\section,numberless}{\normalfont\large\bfseries\centering}{}{0em}%
+    {#1\phantomsection\addcontentsline{toc}{section}{\protect\numberline{}#1}}
+
+\contentsmargin{2em}
+\dottedcontents{section}[1.5em]{}{1.5em}{.5em}
+\dottedcontents{subsection}[4.5em]{}{2em}{.5em}
+\setlength{\parindent}{1.5em}
+
+\OneNumberAllTheorems % For some reason, the cedram enonces are defined but their numbering is independant? This corrects it
+\def\enddoc@text{} % Don't print authors addresses at the end of the article
+
+\let\IsEqualContrib\relax
+\newif\ifcdr@hasequalcontrib\cdr@hasequalcontribfalse
+
+\renewcommand{\thearticle}{e\arabic{article}}
